@@ -9,6 +9,7 @@ import { FormulaireComponent } from './formulaire/formulaire.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { FilterPipe } from './catalogue/filter.pipe';
+import { NgxsModule } from '@ngxs/store';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { FilterPipe } from './catalogue/filter.pipe';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgxsModule.forRoot ()
   ],
   providers: [],
   bootstrap: [AppComponent]
