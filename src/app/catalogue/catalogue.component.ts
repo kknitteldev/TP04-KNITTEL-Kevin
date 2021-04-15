@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FirstService } from '../service/first.service';
-import { Observable, of, from } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable, of, from, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { serializeNodes } from '@angular/compiler/src/i18n/digest';
 import { FormControl } from '@angular/forms';
-
+import { ArticleService } from '../service/article.service';
+import { Article } from 'src/shared/models/article';
 
 @Component({
   selector: 'app-catalogue',
@@ -14,47 +14,20 @@ import { FormControl } from '@angular/forms';
 
 export class CatalogueComponent implements OnInit {
 
-  dataset = ['MDB', 'Angular', 'Bootstrap', 'Framework', 'SPA', 'React', 'Vue'];
+  articles$!: Article[];
+
+  articleSubscription!: Subscription;
 
   searchText: string = "";
 
-  constructor(private firstService: FirstService) { }
-
-  observable4$!: Observable<any>;
-  observable5$!: Observable<any>;
-
-  tabData: Array<String> = [];
-  subscribe: any;
-
-  tabLivre: Array<any> = [];
+  constructor(private articleService: ArticleService) { }
 
   ngOnInit(): void {
-    this.observable4$ = from([
-      { "titre": "linux", "prix": 10 },
-      { "titre": "windows", "prix": 15 },
-      { "titre": "angular", "prix": 5 },
-      { "titre": "talend", "prix": 0 }]
-    );
-  }
-
-  onClickCpt: number = 0;
-  onClick() {
-    if (this.onClickCpt == 0) {
-      if (this.subscribe) {
-        this.subscribe.unsubscribe();
+    this.articleSubscription = this.articleService.articleSubject.subscribe(
+      (articles: Article[]) => {
+        this.articles$! = articles;
       }
-  
-      this.subscribe = this.observable4$.subscribe({
-        next: value => { this.tabData.push("Produit : " + value.titre + ", prix:  " + value.prix) },
-        complete: () => { console.log("complete") },
-        error: err => { console.log(err) }
-      })
-    }
-
-    this.onClickCpt++;
-  }
-
-  onClickBackend() {
-    this.observable5$ = this.firstService.getCatalogue();
+    );
+    this.articleService.emitArticleSubject();
   }
 }

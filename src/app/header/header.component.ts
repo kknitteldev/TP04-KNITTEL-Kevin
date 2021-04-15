@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Store } from '@ngxs/store';
+
 
 @Component({
   selector: 'app-header',
@@ -8,34 +9,12 @@ import { Observable } from 'rxjs';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  nbElementPanier = 0;
 
-  obs$! : Observable<string>;
-  tabData : Array<string> = [];
-  subscribe : any;
-  cpt : number = 0;
+  constructor(private store: Store) { }
 
   ngOnInit(): void {
-    this.obs$ = new Observable(observer => {
-      observer.next("Wejdene 1");
-      observer.next("Wejdene 2");
-      observer.next("Wejdene 3");
-      observer.complete;
-    })
+    this.store.select(state => state.panier.panier.length).subscribe(l => this.nbElementPanier = l);
   }
 
-  obsClick() {
-    if (this.cpt < 1) {
-      if (this.subscribe) {
-        this.subscribe.unsubscribe();
-      }
-  
-      this.subscribe = this.obs$.subscribe({
-        next : value => { this.tabData.push(value) },
-        complete : () => { console.log("Obs complete nigga") },
-        error : err => { console.log(err) }
-      })
-    }
-    this.cpt++;
-  }
 }
